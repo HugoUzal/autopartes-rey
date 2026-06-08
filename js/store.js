@@ -1,18 +1,18 @@
 // ========== ESTADO GLOBAL ==========
-// Variables de estado que representan el "modelo" de la aplicación
 
-var cart       = [];
-var activeCat  = '';
-var activeBrand= '';
-var searchQ    = '';
-var pMin       = 0;
-var pMax       = Infinity;
-var sortMode   = 'default';
+var cart        = [];
+var activeCat   = '';
+var activeBrand = '';
+var searchQ     = '';
+var pMin        = 0;
+var pMax        = Infinity;
+var sortMode    = 'default';
 
-var adminOk    = false;
-var editId     = null;
-var pendingImgs= [];
-var nextId     = products.length + 1;  // requiere data.js cargado antes
+var adminOk     = false;
+var editId      = null;
+var pendingImgs = [];   // previews: base64 (nuevas) o URL (existentes)
+var pendingFiles= [];   // File objects para nuevas imágenes, null para existentes
+var nextId      = products.length + 1;  // requiere data.js cargado antes
 
 // ========== TOAST ==========
 
@@ -96,7 +96,7 @@ function processPayment() {
   var nombre = document.getElementById('ck-nombre').value;
   var card   = document.getElementById('ck-card').value;
   if (!nombre || !card) { toast('⚠️ Completá todos los campos obligatorios'); return; }
-  var total  = cart.reduce(function(s, x) {
+  var total = cart.reduce(function(s, x) {
     var p = products.find(function(z) { return z.id === x.id; });
     return s + (p ? p.price * x.qty : 0);
   }, 0);
@@ -134,18 +134,34 @@ function adminLogout() {
 
 function delProd(id) {
   if (!confirm('¿Eliminar este producto?')) return;
-  products = products.filter(function(p) { return p.id !== id; });
-  renderAdminTbl();
-  toast('🗑 Producto eliminado');
+  var p = products.find(function(x) { return x.id === id; });
+  if (!p) return;
+
+  function removeLocal() {
+    products = products.filter(function(x) { return x.id !== id; });
+    renderAdminTbl();
+    toast('🗑 Producto eliminado');
+  }
+
+  if (p._docId) {
+    fbDeleteProduct(p._docId, function(err) {
+      if (err) { toast('❌ Error al eliminar en Firebase'); return; }
+      removeLocal();
+    });
+  } else {
+    removeLocal();
+  }
 }
 
 // ========== MODAL / IMÁGENES ==========
 
 function openModal(id) {
   editId = id || null;
-  pendingImgs = [];
+  pendingImgs  = [];
+  pendingFiles = [];
   document.getElementById('modal').classList.remove('hidden');
   document.getElementById('modal-title').textContent = id ? 'Editar Producto' : 'Agregar Producto';
+
   if (id) {
     var p = products.find(function(x) { return x.id === id; });
     if (p) {
@@ -159,7 +175,9 @@ function openModal(id) {
       document.getElementById('p-compat').value   = p.compat || '';
       document.getElementById('p-sku').value      = p.sku || '';
       document.getElementById('p-weight').value   = p.weight || '';
-      pendingImgs = p.images.slice();
+      // Imágenes existentes: preview = URL, file = null (ya están en Storage)
+      pendingImgs  = p.images.slice();
+      pendingFiles = p.images.map(function() { return null; });
       renderPreview();
     }
   } else {
@@ -172,15 +190,20 @@ function openModal(id) {
 
 function closeModal() {
   document.getElementById('modal').classList.add('hidden');
-  editId = null;
-  pendingImgs = [];
+  editId       = null;
+  pendingImgs  = [];
+  pendingFiles = [];
 }
 
 function handleUpload(e) {
   var files = Array.prototype.slice.call(e.target.files);
   files.slice(0, 5 - pendingImgs.length).forEach(function(f) {
     var r = new FileReader();
-    r.onload = function(ev) { pendingImgs.push(ev.target.result); renderPreview(); };
+    r.onload = function(ev) {
+      pendingImgs.push(ev.target.result);  // base64 para preview
+      pendingFiles.push(f);                // File para subir a Storage
+      renderPreview();
+    };
     r.readAsDataURL(f);
   });
   e.target.value = '';
@@ -188,6 +211,7 @@ function handleUpload(e) {
 
 function rmImg(i) {
   pendingImgs.splice(i, 1);
+  pendingFiles.splice(i, 1);
   renderPreview();
 }
 
@@ -197,7 +221,11 @@ function saveProduct() {
   var price = parseFloat(document.getElementById('p-price').value);
   var desc  = document.getElementById('p-desc').value.trim();
   if (!name || !cat || !price || !desc) { toast('⚠️ Completá los campos obligatorios (*)'); return; }
+
+  var existing = editId ? products.find(function(p) { return p.id === editId; }) : null;
+
   var data = {
+    id:       existing ? existing.id : nextId,
     name:     name,
     brand:    document.getElementById('p-brand').value.trim(),
     category: cat,
@@ -208,18 +236,31 @@ function saveProduct() {
     compat:   document.getElementById('p-compat').value.trim(),
     sku:      document.getElementById('p-sku').value.trim(),
     weight:   document.getElementById('p-weight').value.trim(),
-    images:   pendingImgs.slice(),
-    rating:   4.5,
-    reviews:  0
+    rating:   existing ? (existing.rating || 4.5) : 4.5,
+    reviews:  existing ? (existing.reviews || 0)  : 0
   };
-  if (editId) {
-    var idx = products.findIndex(function(p) { return p.id === editId; });
-    products[idx] = Object.assign(products[idx], data);
-    toast('✅ Producto actualizado');
-  } else {
-    products.push(Object.assign({ id: nextId++ }, data));
-    toast('✅ Producto agregado');
-  }
-  closeModal();
-  renderAdminTbl();
+
+  // Imágenes: se guardan como base64 directo en Firestore
+  data.images = pendingImgs.slice();
+
+  toast('💾 Guardando...');
+
+  var docId = existing ? (existing._docId || null) : null;
+
+  fbSaveProduct(data, docId, function(err, savedDocId) {
+    if (err) { toast('❌ Error al guardar en Firebase'); console.error(err); return; }
+    data._docId = savedDocId;
+
+    if (existing) {
+      var idx = products.findIndex(function(p) { return p.id === editId; });
+      products[idx] = Object.assign(products[idx], data);
+      toast('✅ Producto actualizado');
+    } else {
+      nextId++;
+      products.push(data);
+      toast('✅ Producto agregado');
+    }
+    closeModal();
+    renderAdminTbl();
+  });
 }
