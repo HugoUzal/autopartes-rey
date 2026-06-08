@@ -202,14 +202,48 @@ function catEmoji(c) {
 }
 
 function renderAdmin() {
-  if (adminOk) {
+  var user = fbCurrentUser();
+  if (adminOk && user) {
     document.getElementById('admin-login').classList.add('hidden');
     document.getElementById('admin-panel').classList.remove('hidden');
+    document.getElementById('admin-user-email').textContent = user.email;
     renderAdminTbl();
   } else {
     document.getElementById('admin-login').classList.remove('hidden');
     document.getElementById('admin-panel').classList.add('hidden');
   }
+}
+
+function switchAdminTab(tab) {
+  var isProductos = tab === 'productos';
+  document.getElementById('admin-tab-productos').classList.toggle('hidden', !isProductos);
+  document.getElementById('admin-tab-actividad').classList.toggle('hidden',  isProductos);
+  // Estilos de las pestañas
+  var tP = document.getElementById('tab-productos');
+  var tA = document.getElementById('tab-actividad');
+  tP.style.color = isProductos ? 'var(--navy)'      : 'var(--gray-text)';
+  tP.style.borderBottomColor = isProductos ? 'var(--navy)' : 'transparent';
+  tA.style.color = isProductos ? 'var(--gray-text)' : 'var(--navy)';
+  tA.style.borderBottomColor = isProductos ? 'transparent' : 'var(--navy)';
+  if (!isProductos) renderActivityLog();
+}
+
+function renderActivityLog() {
+  var el = document.getElementById('activity-log-body');
+  el.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--gray-text)">⏳ Cargando...</td></tr>';
+  fbLoadActivityLog(function(err, list) {
+    if (err || !list.length) {
+      el.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--gray-text)">Sin actividad registrada aún.</td></tr>';
+      return;
+    }
+    el.innerHTML = list.map(function(entry) {
+      var d = entry.timestamp ? entry.timestamp.toDate() : new Date();
+      var fecha = d.toLocaleDateString('es-AR') + ' ' + d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+      var icon  = { agregar: '✅', editar: '✏️', eliminar: '🗑' }[entry.action] || '📌';
+      return '<tr><td>' + fecha + '</td><td style="color:var(--navy)">' + entry.user + '</td>'
+        + '<td>' + icon + ' ' + entry.action + '</td><td>' + (entry.product || '—') + '</td></tr>';
+    }).join('');
+  });
 }
 
 function renderAdminTbl() {

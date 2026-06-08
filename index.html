@@ -24,7 +24,6 @@
         🛒 Carrito
         <span class="cart-badge" id="cart-badge">0</span>
       </button>
-      <button class="nav-btn" onclick="showView('admin')">⚙️ Admin</button>
     </div>
   </div>
   <div class="nav-sub">
@@ -209,30 +208,55 @@
       <div style="font-size:48px;margin-bottom:8px">⚙️</div>
       <h2>Panel Administrador</h2>
       <p>Ingresá tus credenciales para gestionar los productos</p>
-      <input type="text" id="au" placeholder="Usuario">
+      <input type="email" id="au" placeholder="Email">
       <input type="password" id="ap" placeholder="Contraseña" onkeydown="if(event.key==='Enter')adminLogin()">
       <button class="login-btn" onclick="adminLogin()">Ingresar</button>
-      <p style="font-size:11px;color:var(--gray-text);margin-top:12px">Demo: usuario <b>admin</b> / contraseña <b>rey2024</b></p>
     </div>
   </div>
   <div id="admin-panel" class="hidden">
     <div class="admin-wrap">
       <div class="admin-hdr">
-        <h2>⚙️ Gestión de Productos</h2>
+        <div>
+          <h2>⚙️ Panel de Administración</h2>
+          <div style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px">Conectado como: <span id="admin-user-email" style="font-weight:600;color:#fff"></span></div>
+        </div>
         <div style="display:flex;gap:8px">
           <button class="admin-add-btn" onclick="openModal()">+ Agregar Producto</button>
-          <button onclick="adminLogout()" style="background:rgba(255,255,255,.2);color:#fff;padding:8px 14px;border-radius:6px;font-size:13px">Salir</button>
+          <button onclick="adminLogout()" style="background:rgba(255,255,255,.2);color:#fff;padding:8px 14px;border-radius:6px;font-size:13px">Cerrar sesión</button>
         </div>
       </div>
-      <div style="padding:12px">
-        <input type="text" id="admin-search" placeholder="Buscar producto..." oninput="renderAdminTbl()"
-          style="width:280px;padding:8px 12px;border:1px solid var(--gray-border);border-radius:6px;font-size:14px">
+      <!-- Tabs -->
+      <div style="display:flex;gap:0;border-bottom:2px solid var(--gray-border);padding:0 12px">
+        <button id="tab-productos" onclick="switchAdminTab('productos')"
+          style="padding:10px 18px;border:none;background:none;font-size:14px;font-weight:600;color:var(--navy);border-bottom:3px solid var(--navy);margin-bottom:-2px;cursor:pointer">
+          📦 Productos
+        </button>
+        <button id="tab-actividad" onclick="switchAdminTab('actividad')"
+          style="padding:10px 18px;border:none;background:none;font-size:14px;font-weight:600;color:var(--gray-text);border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer">
+          📋 Actividad
+        </button>
       </div>
-      <div style="overflow-x:auto">
-        <table class="admin-tbl">
-          <thead><tr><th>Foto</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
-          <tbody id="admin-tbody"></tbody>
-        </table>
+      <!-- Tab: Productos -->
+      <div id="admin-tab-productos">
+        <div style="padding:12px">
+          <input type="text" id="admin-search" placeholder="Buscar producto..." oninput="renderAdminTbl()"
+            style="width:280px;padding:8px 12px;border:1px solid var(--gray-border);border-radius:6px;font-size:14px">
+        </div>
+        <div style="overflow-x:auto">
+          <table class="admin-tbl">
+            <thead><tr><th>Foto</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
+            <tbody id="admin-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Tab: Actividad -->
+      <div id="admin-tab-actividad" class="hidden">
+        <div style="overflow-x:auto;padding:12px 0">
+          <table class="admin-tbl">
+            <thead><tr><th>Fecha y hora</th><th>Usuario</th><th>Acción</th><th>Producto</th></tr></thead>
+            <tbody id="activity-log-body"><tr><td colspan="4" style="text-align:center;padding:20px;color:var(--gray-text)">Seleccioná esta pestaña para cargar el registro.</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -312,6 +336,7 @@
 <!-- Firebase compat SDK -->
 <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-auth-compat.js"></script>
 <!-- App (en orden de dependencia) -->
 <script src="js/firebase.js"></script>
 <script src="js/data.js"></script>

@@ -118,18 +118,25 @@ function processPayment() {
 // ========== ADMIN - SESIÓN ==========
 
 function adminLogin() {
-  if (document.getElementById('au').value === 'admin' &&
-      document.getElementById('ap').value === 'rey2024') {
-    adminOk = true;
-    renderAdmin();
-  } else {
-    toast('❌ Usuario o contraseña incorrectos');
-  }
+  var email = document.getElementById('au').value.trim();
+  var pass  = document.getElementById('ap').value;
+  if (!email || !pass) { toast('⚠️ Ingresá email y contraseña'); return; }
+  toast('🔄 Verificando...');
+  fbLogin(email, pass, function(err, user) {
+    if (err) {
+      toast('❌ Email o contraseña incorrectos');
+    } else {
+      adminOk = true;
+      renderAdmin();
+    }
+  });
 }
 
 function adminLogout() {
-  adminOk = false;
-  renderAdmin();
+  fbLogout(function() {
+    adminOk = false;
+    renderAdmin();
+  });
 }
 
 function delProd(id) {
@@ -138,6 +145,7 @@ function delProd(id) {
   if (!p) return;
 
   function removeLocal() {
+    fbLogActivity('eliminar', p.name);
     products = products.filter(function(x) { return x.id !== id; });
     renderAdminTbl();
     toast('🗑 Producto eliminado');
@@ -250,6 +258,7 @@ function saveProduct() {
   fbSaveProduct(data, docId, function(err, savedDocId) {
     if (err) { toast('❌ Error al guardar en Firebase'); console.error(err); return; }
     data._docId = savedDocId;
+    fbLogActivity(existing ? 'editar' : 'agregar', data.name);
 
     if (existing) {
       var idx = products.findIndex(function(p) { return p.id === editId; });
