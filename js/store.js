@@ -203,16 +203,35 @@ function closeModal() {
   pendingFiles = [];
 }
 
+function compressImage(file, callback) {
+  var MAX_PX  = 900;    // lado máximo en píxeles
+  var QUALITY = 0.72;   // calidad JPEG (0-1)
+  var reader  = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      var w = img.width, h = img.height;
+      if (w > MAX_PX) { h = Math.round(h * MAX_PX / w); w = MAX_PX; }
+      if (h > MAX_PX) { w = Math.round(w * MAX_PX / h); h = MAX_PX; }
+      var canvas = document.createElement('canvas');
+      canvas.width  = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', QUALITY));
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 function handleUpload(e) {
   var files = Array.prototype.slice.call(e.target.files);
   files.slice(0, 5 - pendingImgs.length).forEach(function(f) {
-    var r = new FileReader();
-    r.onload = function(ev) {
-      pendingImgs.push(ev.target.result);  // base64 para preview
-      pendingFiles.push(f);                // File para subir a Storage
+    compressImage(f, function(base64) {
+      pendingImgs.push(base64);
+      pendingFiles.push(f);
       renderPreview();
-    };
-    r.readAsDataURL(f);
+    });
   });
   e.target.value = '';
 }
