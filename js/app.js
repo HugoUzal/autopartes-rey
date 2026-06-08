@@ -3,6 +3,16 @@
 //   firebase-app-compat.js / firebase-firestore-compat.js / firebase-auth-compat.js
 //   firebase.js → data.js → store.js → ui.js → bot.js → app.js
 
+// Ocultar barra del Mundial fuera de junio-julio 2026
+(function() {
+  var now = new Date();
+  var year = now.getFullYear(), month = now.getMonth() + 1; // mes 1-12
+  var bar = document.getElementById('mundial-bar');
+  if (bar && !(year === 2026 && (month === 6 || month === 7))) {
+    bar.style.display = 'none';
+  }
+})();
+
 // 1. Iniciar Firebase
 initFirebase();
 

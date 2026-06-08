@@ -13,6 +13,72 @@ input,select,textarea{outline:none;font-family:inherit}
 img{max-width:100%;display:block}
 .hidden{display:none!important}
 
+/* MUNDIAL BAR */
+@keyframes mundialMove {
+  0%   { background-position: 0 0; }
+  100% { background-position: 80px 0; }
+}
+@keyframes mundialGlow {
+  0%, 100% { text-shadow: 0 0 8px #F6B40E, 0 0 20px #F6B40E88; }
+  50%       { text-shadow: 0 0 16px #F6B40E, 0 0 40px #F6B40Ecc, 0 0 2px #fff; }
+}
+@keyframes mundialPulse {
+  0%, 100% { box-shadow: 0 0 0 3px #F6B40E, 0 0 16px #F6B40E88; }
+  50%       { box-shadow: 0 0 0 5px #F6B40E, 0 0 32px #F6B40Ecc; }
+}
+#mundial-bar{
+  background: repeating-linear-gradient(
+    90deg,
+    #5ba3d9 0px, #74ACDF 20px,
+    #e8f4ff 20px, #fff    40px,
+    #74ACDF 40px, #5ba3d9 60px,
+    #fff    60px, #e8f4ff 80px
+  );
+  background-size: 80px 100%;
+  animation: mundialMove 1.8s linear infinite;
+  border-bottom: 3px solid #F6B40E;
+  position: relative;
+  z-index: 101;
+  overflow: visible;
+}
+.mundial-inner{
+  max-width:1400px;margin:0 auto;padding:0 56px 0 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  height:68px;
+}
+.mundial-text{
+  display:flex;align-items:center;gap:12px;flex:1;
+  background:linear-gradient(135deg,rgba(13,33,55,.88),rgba(26,58,92,.88));
+  border-radius:8px;padding:8px 18px;color:#fff;font-size:15px;font-weight:700;
+  white-space:nowrap;overflow:hidden;
+  border:1px solid rgba(246,180,14,.4);
+  letter-spacing:.3px;
+}
+.mundial-text .m-stars{
+  color:#F6B40E;font-size:18px;letter-spacing:3px;
+  animation: mundialGlow 2s ease-in-out infinite;
+}
+.mundial-text .m-flag{ font-size:22px; }
+.mundial-photo{
+  height:96px;width:96px;
+  border-radius:50%;
+  border:3px solid #F6B40E;
+  object-fit:cover;object-position:top center;
+  flex-shrink:0;
+  position:relative;
+  bottom:-20px;
+  animation: mundialPulse 2.5s ease-in-out infinite;
+  background:#1a3a5c;
+}
+.mundial-close{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:rgba(0,0,0,.35);color:#fff;border:none;border-radius:50%;
+  width:24px;height:24px;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:.2s;
+}
+.mundial-close:hover{background:rgba(0,0,0,.6)}
+
 /* NAVBAR */
 #navbar{background:linear-gradient(135deg,var(--navy-dark),var(--navy));position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.35);overflow:visible}
 .nav-top{display:flex;align-items:center;gap:12px;max-width:1400px;margin:0 auto;padding:8px 16px}
