@@ -5,7 +5,9 @@
   --gray-text:#666;--green:#00a650;--blue-link:#3483fa;
   --shadow:0 1px 4px rgba(0,0,0,.15);--shadow-hover:0 4px 16px rgba(0,0,0,.2);
 }
-body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gray-bg);color:#333;min-height:100vh}
+body{font-family:'Segoe UI',Arial,sans-serif;color:#333;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:url('../ejemplos/backgroun beige.png') center center / cover;opacity:0.50;z-index:-1;pointer-events:none}
+body::after{content:'';position:fixed;inset:0;background:var(--gray-bg);opacity:0.70;z-index:-1;pointer-events:none}
 button{cursor:pointer;border:none;outline:none}
 input,select,textarea{outline:none;font-family:inherit}
 img{max-width:100%;display:block}
