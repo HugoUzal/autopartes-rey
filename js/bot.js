@@ -24,7 +24,7 @@ var BOT = [
   { t: ['gracias','graciosa','genial','excelente','perfecto','ok'],
     r: '😊 ¡Con mucho gusto! Si necesitás algo más, acá estoy. ¡Que andes bien! 🔧' },
   { t: ['whatsapp','telefono','contacto','llamar','mail','email'],
-    r: '📱 Escribinos por <strong>WhatsApp al +54 9 11 4567-8901</strong> o a ventas@autopartesrey.com' },
+    r: '📱 Escribinos por <strong>WhatsApp al +54 9 11 5655-6277</strong> o a ventas@autopartesrey.com · Facebook: fb.com/autopartes.rey' },
   { t: ['compatib','sirve','anda','modelo','auto','marca','año','vehiculo'],
     r: '🔍 Para verificar compatibilidad decime <strong>marca, modelo y año</strong> de tu vehículo y te indico exactamente qué necesitás.' },
   { t: ['amortiguador','suspension','resorte'],
@@ -122,7 +122,7 @@ function botSend() {
     }
 
     // 3. Fallback al WhatsApp
-    addBotMsg('🔧 No encontré "' + text + '" en el catálogo. Escribinos por <strong>WhatsApp al +54 9 11 4567-8901</strong> y te ayudamos.', true);
+    addBotMsg('🔧 No encontré "' + text + '" en el catálogo. Escribinos por <strong>WhatsApp al +54 9 11 5655-6277</strong> y te ayudamos.', true);
   }, 600);
 }
 

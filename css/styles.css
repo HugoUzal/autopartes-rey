@@ -302,6 +302,22 @@ img{max-width:100%;display:block}
 .bot-input-row input{flex:1;padding:8px 12px;border:1px solid var(--gray-border);border-radius:20px;font-size:13px}
 .bot-send{background:var(--navy);color:#fff;width:34px;height:34px;border-radius:50%;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 
+/* FOOTER */
+#site-footer{background:linear-gradient(135deg,var(--navy-dark),var(--navy));color:#fff;margin-top:40px;padding:36px 16px 0}
+.footer-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:28px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.15)}
+@media(max-width:900px){.footer-inner{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.footer-inner{grid-template-columns:1fr}}
+.footer-col h4{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--gold);margin-bottom:12px}
+.footer-link{display:block;color:rgba(255,255,255,.75);font-size:13px;text-decoration:none;margin-bottom:8px;transition:.2s}
+.footer-link:hover{color:#fff}
+.footer-social{display:flex;align-items:center;gap:8px}
+.footer-info{font-size:13px;color:rgba(255,255,255,.65);line-height:1.6}
+.footer-bottom{text-align:center;padding:14px;font-size:12px;color:rgba(255,255,255,.4)}
+
+/* BOTÓN FLOTANTE WHATSAPP */
+#wa-btn{position:fixed;bottom:24px;left:24px;z-index:150;width:58px;height:58px;border-radius:50%;background:#25D366;box-shadow:0 4px 16px rgba(37,211,102,.5);display:flex;align-items:center;justify-content:center;transition:.3s;border:3px solid #fff}
+#wa-btn:hover{transform:scale(1.1);box-shadow:0 6px 22px rgba(37,211,102,.7)}
+
 /* TOAST */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy-dark);color:#fff;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:300;display:none;box-shadow:0 4px 16px rgba(0,0,0,.3);white-space:nowrap}
 
