@@ -196,11 +196,22 @@ function openModal(id) {
   }
 }
 
+function markError(id) {
+  document.getElementById(id).style.border = '2px solid #d32f2f';
+  document.getElementById(id).style.background = '#fff5f5';
+}
+
 function closeModal() {
   document.getElementById('modal').classList.add('hidden');
   editId       = null;
   pendingImgs  = [];
   pendingFiles = [];
+  // Limpiar errores visuales
+  ['p-name','p-cat','p-price','p-oldprice','p-stock','p-desc'].forEach(function(id) {
+    var el = document.getElementById(id);
+    el.style.border = '';
+    el.style.background = '';
+  });
 }
 
 function compressImage(file, callback) {
@@ -243,11 +254,33 @@ function rmImg(i) {
 }
 
 function saveProduct() {
+  // Limpiar errores anteriores
+  ['p-name','p-cat','p-price','p-desc'].forEach(function(id) {
+    document.getElementById(id).style.border = '';
+  });
+
   var name  = document.getElementById('p-name').value.trim();
   var cat   = document.getElementById('p-cat').value;
   var price = parseFloat(document.getElementById('p-price').value);
   var desc  = document.getElementById('p-desc').value.trim();
-  if (!name || !cat || !price || !desc) { toast('⚠️ Completá los campos obligatorios (*)'); return; }
+
+  // Validar y marcar en rojo los inválidos
+  var errors = [];
+  if (!name)        { markError('p-name');  errors.push('Nombre'); }
+  if (!cat)         { markError('p-cat');   errors.push('Categoría'); }
+  if (!price || price < 0) { markError('p-price'); errors.push('Precio'); }
+  if (!desc)        { markError('p-desc');  errors.push('Descripción'); }
+
+  // Validar negativos en precio tachado y stock
+  var oldPrice = parseFloat(document.getElementById('p-oldprice').value) || 0;
+  var stock    = parseInt(document.getElementById('p-stock').value)      || 0;
+  if (oldPrice < 0) { markError('p-oldprice'); errors.push('Precio tachado'); }
+  if (stock    < 0) { markError('p-stock');    errors.push('Stock'); }
+
+  if (errors.length) {
+    toast('⚠️ Corregí: ' + errors.join(', '));
+    return;
+  }
 
   var existing = editId ? products.find(function(p) { return p.id === editId; }) : null;
 
