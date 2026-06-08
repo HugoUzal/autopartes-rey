@@ -55,6 +55,21 @@ function addBotMsg(text, isBot) {
   m.scrollTop = m.scrollHeight;
 }
 
+// Palabras de relleno que se ignoran al buscar productos
+var FILLER = [
+  'hola','buenas','buen','ola','hey','saludos','buen','dia','tarde','noche',
+  'busco','buscando','quiero','necesito','tienen','tenes','tenés','hay','venden',
+  'podrian','podrían','podés','podes','conseguir','encontrar','ver','dame','das',
+  'me','un','una','unos','unas','el','la','los','las','por','favor','porfavor',
+  'para','del','que','con','como','mas','más','algo','algún','algun','este','esa'
+];
+
+function cleanQuery(text) {
+  return text.toLowerCase().split(/\s+/)
+    .filter(function(w) { return w.length > 2 && FILLER.indexOf(w) === -1; })
+    .join(' ');
+}
+
 function searchProducts(query) {
   var words = query.toLowerCase().split(/\s+/).filter(function(w) { return w.length > 2; });
   if (!words.length) return [];
@@ -71,9 +86,34 @@ function botSend() {
   addBotMsg(text, false);
   inp.value = '';
   setTimeout(function() {
-    var low = text.toLowerCase();
+    var low     = text.toLowerCase();
+    var cleaned = cleanQuery(text);
 
-    // 1. Intentar match con respuestas fijas
+    // 1. Si hay palabras con sustancia después de limpiar → buscar productos primero
+    if (cleaned.length) {
+      var found = searchProducts(cleaned);
+      if (found.length) {
+        var top  = found.slice(0, 3);
+        var list = top.map(function(p) {
+          return '<div onclick="toggleBot();showProduct(' + p.id + ')" style="'
+            + 'margin:6px 0;padding:8px 10px;background:rgba(255,255,255,.15);'
+            + 'border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.2)">'
+            + '<strong>' + p.name + '</strong><br>'
+            + '<span style="font-size:12px;opacity:.85">' + p.brand + ' · <strong>$' + fmt(p.price) + '</strong></span>'
+            + '</div>';
+        }).join('');
+        var extra = found.length > 3
+          ? '<br><small style="opacity:.7">...y ' + (found.length - 3) + ' más. Buscalos en el catálogo.</small>'
+          : '';
+        addBotMsg(
+          '🔍 Encontré <strong>' + found.length + ' producto' + (found.length > 1 ? 's' : '') + '</strong>:<br>' + list + extra,
+          true
+        );
+        return;
+      }
+    }
+
+    // 2. Match con respuestas fijas (envíos, pagos, saludos, etc.)
     for (var i = 0; i < BOT.length; i++) {
       if (BOT[i].t.some(function(t) { return low.indexOf(t) >= 0; })) {
         addBotMsg(BOT[i].r, true);
@@ -81,29 +121,8 @@ function botSend() {
       }
     }
 
-    // 2. Buscar en el catálogo de productos
-    var found = searchProducts(text);
-    if (found.length) {
-      var top  = found.slice(0, 3);
-      var list = top.map(function(p) {
-        return '<div onclick="toggleBot();showProduct(' + p.id + ')" style="'
-          + 'margin:6px 0;padding:8px 10px;background:rgba(255,255,255,.15);'
-          + 'border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.2)">'
-          + '<strong>' + p.name + '</strong><br>'
-          + '<span style="font-size:12px;opacity:.85">' + p.brand + ' · <strong>$' + fmt(p.price) + '</strong></span>'
-          + '</div>';
-      }).join('');
-      var extra = found.length > 3
-        ? '<small style="opacity:.7">...y ' + (found.length - 3) + ' más. Buscalos en el catálogo.</small>'
-        : '';
-      addBotMsg(
-        '🔍 Encontré <strong>' + found.length + ' producto' + (found.length > 1 ? 's' : '') + '</strong> para "' + text + '":<br>' + list + extra,
-        true
-      );
-    } else {
-      // 3. Fallback al WhatsApp
-      addBotMsg('🔧 No encontré "' + text + '" en el catálogo. Para más info escribinos por <strong>WhatsApp al +54 9 11 4567-8901</strong>.', true);
-    }
+    // 3. Fallback al WhatsApp
+    addBotMsg('🔧 No encontré "' + text + '" en el catálogo. Escribinos por <strong>WhatsApp al +54 9 11 4567-8901</strong> y te ayudamos.', true);
   }, 600);
 }
 
