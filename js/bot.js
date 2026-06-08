@@ -55,6 +55,15 @@ function addBotMsg(text, isBot) {
   m.scrollTop = m.scrollHeight;
 }
 
+function searchProducts(query) {
+  var words = query.toLowerCase().split(/\s+/).filter(function(w) { return w.length > 2; });
+  if (!words.length) return [];
+  return products.filter(function(p) {
+    var hay = (p.name + ' ' + p.brand + ' ' + p.category + ' ' + (p.desc || '') + ' ' + (p.compat || '')).toLowerCase();
+    return words.some(function(w) { return hay.indexOf(w) >= 0; });
+  });
+}
+
 function botSend() {
   var inp  = document.getElementById('bot-input');
   var text = inp.value.trim();
@@ -62,18 +71,39 @@ function botSend() {
   addBotMsg(text, false);
   inp.value = '';
   setTimeout(function() {
-    var low   = text.toLowerCase();
-    var match = null;
+    var low = text.toLowerCase();
+
+    // 1. Intentar match con respuestas fijas
     for (var i = 0; i < BOT.length; i++) {
       if (BOT[i].t.some(function(t) { return low.indexOf(t) >= 0; })) {
-        match = BOT[i];
-        break;
+        addBotMsg(BOT[i].r, true);
+        return;
       }
     }
-    addBotMsg(
-      match ? match.r : '🔧 Para más info escribinos por <strong>WhatsApp al +54 9 11 4567-8901</strong>. ¡Te atendemos al toque!',
-      true
-    );
+
+    // 2. Buscar en el catálogo de productos
+    var found = searchProducts(text);
+    if (found.length) {
+      var top  = found.slice(0, 3);
+      var list = top.map(function(p) {
+        return '<div onclick="toggleBot();showProduct(' + p.id + ')" style="'
+          + 'margin:6px 0;padding:8px 10px;background:rgba(255,255,255,.15);'
+          + 'border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.2)">'
+          + '<strong>' + p.name + '</strong><br>'
+          + '<span style="font-size:12px;opacity:.85">' + p.brand + ' · <strong>$' + fmt(p.price) + '</strong></span>'
+          + '</div>';
+      }).join('');
+      var extra = found.length > 3
+        ? '<small style="opacity:.7">...y ' + (found.length - 3) + ' más. Buscalos en el catálogo.</small>'
+        : '';
+      addBotMsg(
+        '🔍 Encontré <strong>' + found.length + ' producto' + (found.length > 1 ? 's' : '') + '</strong> para "' + text + '":<br>' + list + extra,
+        true
+      );
+    } else {
+      // 3. Fallback al WhatsApp
+      addBotMsg('🔧 No encontré "' + text + '" en el catálogo. Para más info escribinos por <strong>WhatsApp al +54 9 11 4567-8901</strong>.', true);
+    }
   }, 600);
 }
 
