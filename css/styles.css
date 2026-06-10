@@ -329,3 +329,64 @@ img{max-width:100%;display:block}
 .success-wrap .info-box{background:var(--gray-bg);border-radius:8px;padding:14px;margin-bottom:22px;text-align:left}
 .success-wrap .info-box p{font-size:14px;margin-bottom:6px;color:#333}
 .success-wrap button{padding:13px 36px;background:var(--navy);color:#fff;border-radius:8px;font-size:16px;font-weight:700}
+
+/* ==================== MOBILE ==================== */
+@media(max-width:600px){
+
+  /* MUNDIAL BAR: más chico, Messi no desborda */
+  #mundial-bar{overflow:hidden}
+  .mundial-inner{height:46px;padding:0 36px 0 10px;gap:8px}
+  .mundial-text{font-size:11px;padding:5px 8px;gap:5px}
+  .mundial-text .m-stars{font-size:12px;letter-spacing:1px}
+  .mundial-text .m-flag{font-size:15px}
+  .mundial-photo{height:58px;width:58px;bottom:0;position:static;margin-left:4px}
+
+  /* NAVBAR: logo chico, buscador en segunda fila */
+  #navbar{overflow:hidden}
+  .nav-top{flex-wrap:wrap;padding:6px 10px;gap:6px}
+  .logo-wrap img{height:52px;margin-bottom:0}
+  .search-bar{order:3;width:100%;max-width:100%;flex:none}
+  .search-bar input{font-size:14px;padding:9px 12px}
+  .nav-actions{gap:2px}
+  .nav-btn{font-size:12px;padding:6px 8px}
+
+  /* PILLS: scroll horizontal, sin padding izquierdo enorme */
+  .nav-sub-inner{
+    padding:0 8px !important;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .nav-sub-inner::-webkit-scrollbar{display:none}
+  .cat-pill{white-space:nowrap;flex-shrink:0}
+
+  /* HERO */
+  .hero-banner{padding:20px 16px;border-radius:8px}
+  .hero-banner h2{font-size:20px}
+  .hero-banner p{font-size:13px;margin-bottom:12px}
+  .hero-banner img{height:100px!important}
+
+  /* PRODUCTOS: 2 columnas */
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .product-card{padding:8px}
+  .product-card .img-wrap{height:120px}
+  .product-card .price{font-size:16px}
+  .product-card .pname{font-size:13px}
+
+  /* OFFERS BAR */
+  .offer-chip{padding:8px 10px}
+  .offer-chip strong{font-size:12px}
+  .offer-chip span{font-size:10px}
+
+  /* BOT */
+  #bot-bubble{width:calc(100vw - 20px);right:10px;bottom:84px}
+  #bot-trigger{width:54px;height:54px;bottom:16px;right:16px}
+
+  /* WHATSAPP */
+  #wa-btn{width:50px;height:50px;bottom:16px;left:16px}
+
+  /* GENERAL */
+  .page-wrap{padding:10px}
+  .back-btn{font-size:13px;margin-bottom:10px}
+}
