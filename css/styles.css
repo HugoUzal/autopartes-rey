@@ -438,11 +438,8 @@ body.dark .bot-quick-btn{background:#1e3250;border-color:#2a4a6e;color:#b0c4de}
   .logo-wrap img{height:54px;margin-bottom:0}
   .search-bar{order:3;width:100%;max-width:100%;flex:none}
   .search-bar input{font-size:14px;padding:9px 12px}
-  /* Botones de nav: solo icono en mobile */
-  .nav-btn{font-size:0;padding:8px}
-  .nav-btn::first-letter{font-size:18px}
-  /* Hamburguesa visible en mobile */
-  #hamburger{display:flex}
+  /* Botones de nav: compactos en mobile */
+  .nav-btn{font-size:12px;padding:6px 8px;gap:4px}
   /* Dark switch más chico en mobile */
   .dark-switch{width:30px;height:30px}
 
