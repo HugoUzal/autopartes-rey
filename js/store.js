@@ -40,8 +40,6 @@ function addToCart(id, qty) {
 function updateBadge() {
   var n = cart.reduce(function(s, x) { return s + x.qty; }, 0);
   document.getElementById('cart-badge').textContent = n;
-  var mb = document.getElementById('cart-badge-mobile');
-  if (mb) mb.textContent = n;
 }
 
 function toggleMobileMenu() {
@@ -51,6 +49,12 @@ function toggleMobileMenu() {
   menu.classList.toggle('hidden', open);
   btn.classList.toggle('open', !open);
   document.body.style.overflow = open ? '' : 'hidden';
+}
+
+function toggleDark() {
+  var isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('aar-dark', isDark ? '1' : '0');
+  document.getElementById('dark-switch').classList.toggle('active', isDark);
 }
 
 function updQty(id, d) {

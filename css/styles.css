@@ -330,10 +330,33 @@ img{max-width:100%;display:block}
 .success-wrap .info-box p{font-size:14px;margin-bottom:6px;color:#333}
 .success-wrap button{padding:13px 36px;background:var(--navy);color:#fff;border-radius:8px;font-size:16px;font-weight:700}
 
-/* HAMBURGUESA Y MENÚ MOBILE */
-.nav-actions-mobile{display:none;align-items:center;gap:6px}
-#hamburger{background:none;border:none;cursor:pointer;padding:6px;display:flex;flex-direction:column;gap:5px;flex-shrink:0}
-#hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px;transition:.3s}
+/* DARK MODE TOGGLE (inspirado en UIverse) */
+.dark-switch{
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(99,99,99,.45);
+  border:2px solid rgba(126,126,126,.5);
+  box-shadow:0 0 3px rgba(0,0,0,.8) inset;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:.35s;flex-shrink:0;
+}
+.dark-switch svg{width:1em;height:1em;stroke:rgb(200,200,200);transition:.35s}
+.dark-switch .icon-moon{display:none}
+.dark-switch .icon-sun{display:block}
+.dark-switch.active{
+  background:rgb(146,180,184);
+  border-color:#fff;
+  box-shadow:0 0 2px rgb(151,243,255) inset,
+    0 0 8px rgb(151,243,255) inset,
+    0 0 16px rgb(151,243,255),
+    0 0 40px rgb(151,243,255);
+}
+.dark-switch.active svg{stroke:#fff;filter:drop-shadow(0 0 4px rgb(151,243,255))}
+.dark-switch.active .icon-sun{display:none}
+.dark-switch.active .icon-moon{display:block}
+
+/* HAMBURGUESA */
+#hamburger{background:none;border:none;cursor:pointer;padding:6px;display:none;flex-direction:column;gap:5px;flex-shrink:0}
+#hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.3s}
 #hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 #hamburger.open span:nth-child(2){opacity:0}
 #hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
@@ -357,10 +380,51 @@ img{max-width:100%;display:block}
   color:var(--gold);padding:14px 0 6px;font-weight:700;
 }
 
-/* ==================== MOBILE ==================== */
-@media(max-width:600px){
+/* ==================== DARK MODE ==================== */
+body.dark{background-color:#0d1f33;color:#d0d8e8}
+body.dark::before{opacity:0.10}
+body.dark::after{background:#0d1f33;opacity:0.93}
+body.dark .product-card{background:#152640;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+body.dark .product-card .img-wrap{background:#1e3250}
+body.dark .product-card .pname{color:#d0d8e8}
+body.dark .product-card .brand{color:#7a9bbf}
+body.dark .product-card .price{color:#f0b429}
+body.dark .sidebar{background:#152640}
+body.dark .sidebar h3{color:#f0b429}
+body.dark .filter-list a{color:#b0c4de}
+body.dark .filter-list a.active{color:#fff}
+body.dark .filter-list .cnt{background:#1e3250;color:#b0c4de}
+body.dark .price-inputs input{background:#1e3250;border-color:#2a4a6e;color:#d0d8e8}
+body.dark .price-inputs button{background:#1e3250;color:#f0b429}
+body.dark .offer-chip{background:#152640}
+body.dark .offer-chip strong{color:#d0d8e8}
+body.dark .offer-chip span{color:#7a9bbf}
+body.dark .cart-box{background:#152640}
+body.dark .cart-box h2{color:#d0d8e8;border-color:#2a4a6e}
+body.dark .cart-item{border-color:#2a4a6e}
+body.dark .summary-box{background:#152640}
+body.dark .summary-box h3{color:#d0d8e8;border-color:#2a4a6e}
+body.dark .ck-step{background:#152640;border-color:#2a4a6e}
+body.dark .ck-body input,body.dark .ck-body select{background:#1e3250;border-color:#2a4a6e;color:#d0d8e8}
+body.dark .ck-body label{color:#b0c4de}
+body.dark .order-panel{background:#152640}
+body.dark .order-panel h3{color:#d0d8e8;border-color:#2a4a6e}
+body.dark .admin-login-wrap{background:#152640}
+body.dark .admin-login-wrap h2{color:#d0d8e8}
+body.dark .admin-login-wrap input{background:#1e3250;border-color:#2a4a6e;color:#d0d8e8}
+body.dark .sort-select{background:#152640;color:#d0d8e8;border-color:#2a4a6e}
+body.dark .products-count{color:#b0c4de}
+body.dark .bot-msgs{background:#0d1f33}
+body.dark .msg.bot{background:#152640;color:#d0d8e8}
+body.dark #bot-bubble{background:#0d1f33}
+body.dark .bot-quick,body.dark .bot-input-row{background:#152640;border-color:#2a4a6e}
+body.dark .bot-input-row input{background:#1e3250;border-color:#2a4a6e;color:#d0d8e8}
+body.dark .bot-quick-btn{background:#1e3250;border-color:#2a4a6e;color:#b0c4de}
 
-  /* MUNDIAL BAR: más chico, Messi no desborda */
+/* ==================== MOBILE (≤768px) ==================== */
+@media(max-width:768px){
+
+  /* MUNDIAL BAR */
   #mundial-bar{overflow:hidden}
   .mundial-inner{height:46px;padding:0 36px 0 10px;gap:8px}
   .mundial-text{font-size:11px;padding:5px 8px;gap:5px}
@@ -368,16 +432,21 @@ img{max-width:100%;display:block}
   .mundial-text .m-flag{font-size:15px}
   .mundial-photo{height:58px;width:58px;bottom:0;position:static;margin-left:4px}
 
-  /* NAVBAR: logo chico, buscador en segunda fila, hamburguesa */
+  /* NAVBAR: logo chico, buscador abajo, hamburguesa visible */
   #navbar{overflow:hidden}
   .nav-top{flex-wrap:wrap;padding:6px 10px;gap:6px}
-  .logo-wrap img{height:52px;margin-bottom:0}
+  .logo-wrap img{height:54px;margin-bottom:0}
   .search-bar{order:3;width:100%;max-width:100%;flex:none}
   .search-bar input{font-size:14px;padding:9px 12px}
-  #nav-actions-desktop{display:none}
-  .nav-actions-mobile{display:flex}
+  /* Botones de nav: solo icono en mobile */
+  .nav-btn{font-size:0;padding:8px}
+  .nav-btn::first-letter{font-size:18px}
+  /* Hamburguesa visible en mobile */
+  #hamburger{display:flex}
+  /* Dark switch más chico en mobile */
+  .dark-switch{width:30px;height:30px}
 
-  /* PILLS: scroll horizontal, sin padding izquierdo enorme */
+  /* PILLS */
   .nav-sub-inner{
     padding:0 8px !important;
     flex-wrap:nowrap;
@@ -392,7 +461,11 @@ img{max-width:100%;display:block}
   .hero-banner{padding:20px 16px;border-radius:8px}
   .hero-banner h2{font-size:20px}
   .hero-banner p{font-size:13px;margin-bottom:12px}
-  .hero-banner img{height:100px!important}
+  .hero-banner img{height:90px!important}
+
+  /* LAYOUT: ocultar sidebar */
+  .layout-grid{grid-template-columns:1fr!important}
+  .sidebar{display:none}
 
   /* PRODUCTOS: 2 columnas */
   .products-grid{grid-template-columns:repeat(2,1fr);gap:8px}
@@ -409,11 +482,6 @@ img{max-width:100%;display:block}
   /* BOT */
   #bot-bubble{width:calc(100vw - 20px);right:10px;bottom:84px}
   #bot-trigger{width:54px;height:54px;bottom:16px;right:16px}
-
-  /* WHATSAPP */
   #wa-btn{width:50px;height:50px;bottom:16px;left:16px}
-
-  /* GENERAL */
   .page-wrap{padding:10px}
-  .back-btn{font-size:13px;margin-bottom:10px}
 }

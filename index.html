@@ -54,19 +54,19 @@
       <input type="text" id="search-input" placeholder="Buscar repuestos, aceites, filtros..." oninput="handleSearch()" onkeydown="if(event.key==='Enter')handleSearch()">
       <button onclick="handleSearch()">🔍</button>
     </div>
-    <div class="nav-actions" id="nav-actions-desktop">
+    <div class="nav-actions">
       <button class="nav-btn" onclick="showView('home')">🏠 Inicio</button>
       <button class="nav-btn" onclick="showView('cart')">
         🛒 Carrito
         <span class="cart-badge" id="cart-badge">0</span>
       </button>
-    </div>
-    <!-- Mobile: solo carrito visible + hamburguesa -->
-    <div class="nav-actions-mobile">
-      <button class="nav-btn" onclick="showView('cart')" style="position:relative">
-        🛒 <span class="cart-badge" id="cart-badge-mobile">0</span>
+      <!-- Toggle modo claro/oscuro -->
+      <button class="dark-switch" id="dark-switch" onclick="toggleDark()" title="Modo claro / oscuro">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <button id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
+      <!-- Hamburguesa (solo mobile) -->
+      <button id="hamburger" onclick="toggleMobileMenu()" aria-label="Categorías">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -76,10 +76,8 @@
   </div>
 </nav>
 
-<!-- MENÚ MOBILE -->
+<!-- MENÚ MOBILE: categorías -->
 <div id="mobile-menu" class="hidden">
-  <button class="mob-item" onclick="showView('home');toggleMobileMenu()">🏠 Inicio</button>
-  <button class="mob-item" onclick="showView('cart');toggleMobileMenu()">🛒 Carrito</button>
   <div class="mob-divider">Categorías</div>
   <button class="mob-item" onclick="filterCat('');toggleMobileMenu()">📦 Todos los productos</button>
   <button class="mob-item" onclick="filterCat('Filtros');toggleMobileMenu()">🌀 Filtros</button>

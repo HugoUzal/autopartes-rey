@@ -3,6 +3,13 @@
 //   firebase-app-compat.js / firebase-firestore-compat.js / firebase-auth-compat.js
 //   firebase.js → data.js → store.js → ui.js → bot.js → app.js
 
+// Aplicar modo oscuro guardado
+if (localStorage.getItem('aar-dark') === '1') {
+  document.body.classList.add('dark');
+  var ds = document.getElementById('dark-switch');
+  if (ds) ds.classList.add('active');
+}
+
 // Ocultar barra del Mundial fuera de junio-julio 2026
 (function() {
   var now = new Date();
