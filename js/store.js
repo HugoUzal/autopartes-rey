@@ -38,8 +38,19 @@ function addToCart(id, qty) {
 }
 
 function updateBadge() {
-  document.getElementById('cart-badge').textContent =
-    cart.reduce(function(s, x) { return s + x.qty; }, 0);
+  var n = cart.reduce(function(s, x) { return s + x.qty; }, 0);
+  document.getElementById('cart-badge').textContent = n;
+  var mb = document.getElementById('cart-badge-mobile');
+  if (mb) mb.textContent = n;
+}
+
+function toggleMobileMenu() {
+  var menu = document.getElementById('mobile-menu');
+  var btn  = document.getElementById('hamburger');
+  var open = !menu.classList.contains('hidden');
+  menu.classList.toggle('hidden', open);
+  btn.classList.toggle('open', !open);
+  document.body.style.overflow = open ? '' : 'hidden';
 }
 
 function updQty(id, d) {

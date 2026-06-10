@@ -54,11 +54,20 @@
       <input type="text" id="search-input" placeholder="Buscar repuestos, aceites, filtros..." oninput="handleSearch()" onkeydown="if(event.key==='Enter')handleSearch()">
       <button onclick="handleSearch()">🔍</button>
     </div>
-    <div class="nav-actions">
+    <div class="nav-actions" id="nav-actions-desktop">
       <button class="nav-btn" onclick="showView('home')">🏠 Inicio</button>
       <button class="nav-btn" onclick="showView('cart')">
         🛒 Carrito
         <span class="cart-badge" id="cart-badge">0</span>
+      </button>
+    </div>
+    <!-- Mobile: solo carrito visible + hamburguesa -->
+    <div class="nav-actions-mobile">
+      <button class="nav-btn" onclick="showView('cart')" style="position:relative">
+        🛒 <span class="cart-badge" id="cart-badge-mobile">0</span>
+      </button>
+      <button id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
+        <span></span><span></span><span></span>
       </button>
     </div>
   </div>
@@ -66,6 +75,22 @@
     <div class="nav-sub-inner" id="cat-pills"></div>
   </div>
 </nav>
+
+<!-- MENÚ MOBILE -->
+<div id="mobile-menu" class="hidden">
+  <button class="mob-item" onclick="showView('home');toggleMobileMenu()">🏠 Inicio</button>
+  <button class="mob-item" onclick="showView('cart');toggleMobileMenu()">🛒 Carrito</button>
+  <div class="mob-divider">Categorías</div>
+  <button class="mob-item" onclick="filterCat('');toggleMobileMenu()">📦 Todos los productos</button>
+  <button class="mob-item" onclick="filterCat('Filtros');toggleMobileMenu()">🌀 Filtros</button>
+  <button class="mob-item" onclick="filterCat('Frenos');toggleMobileMenu()">🛑 Frenos</button>
+  <button class="mob-item" onclick="filterCat('Suspensión');toggleMobileMenu()">🔩 Suspensión</button>
+  <button class="mob-item" onclick="filterCat('Motor');toggleMobileMenu()">⚙️ Motor</button>
+  <button class="mob-item" onclick="filterCat('Electricidad');toggleMobileMenu()">⚡ Electricidad</button>
+  <button class="mob-item" onclick="filterCat('Aceites');toggleMobileMenu()">🛢️ Aceites</button>
+  <button class="mob-item" onclick="filterCat('Encendido');toggleMobileMenu()">🔥 Encendido</button>
+  <button class="mob-item" onclick="filterCat('Accesorios');toggleMobileMenu()">🔧 Accesorios</button>
+</div>
 
 <div id="toast"></div>
 
