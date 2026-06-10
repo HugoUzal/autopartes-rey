@@ -62,3 +62,12 @@ fbLoadProducts(function(err, list) {
   // Verificar hash después de que la página está lista
   checkAdminHash();
 });
+
+// ========== PWA: REGISTRAR SERVICE WORKER ==========
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(err) {
+      console.warn('SW no registrado:', err);
+    });
+  });
+}
